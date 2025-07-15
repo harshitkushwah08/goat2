@@ -7,7 +7,10 @@ import {
    History,
    Pen,
   BookOpen,
-  LayoutGrid
+  LayoutGrid,
+  UserPlus,
+  Users,
+  Contact
 } from "lucide-react";
 import { useDebounce } from "../../hooks/useDebounce";
 import { imgPath } from "../../assets/imagesData";
@@ -326,6 +329,14 @@ export const Navbar = () => {
                   <Bell className="w-4 h-4 mr-3" />
                   Notifications
                 </Link>
+                <Link
+                  to="/contact"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md mx-2 my-1 active:bg-primary-50"
+                  onClick={() => setShowProfile(false)}
+                >
+                  <Contact className="w-4 h-4 mr-3" />
+                  Contact Us
+                </Link>
                 <div className="px-3 py-1 text-xs text-gray-500 uppercase font-semibold mt-2">Content</div>
                 <Link
                   to="/recently-deleted"
@@ -335,7 +346,34 @@ export const Navbar = () => {
                   <History className="w-4 h-4 mr-3" />
                   Recently Deleted
                 </Link>
-           
+                <div className="px-3 py-1 text-xs text-gray-500 uppercase font-semibold mt-2">Accounts</div>
+                <div className="flex items-center px-4 py-2 text-sm text-gray-700">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={imgPath.imgLogoMobile}
+                      alt="Current Account" 
+                      className="w-6 h-6 rounded-full border border-primary-500"
+                    />
+                    <span className="font-medium">John Doe</span>
+                    <Badge variant="success" className="text-xs ml-1">Active</Badge>
+                  </div>
+                </div>
+                <div className="flex items-center px-4 py-2 text-sm text-gray-700">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={imgPath.testi1}
+                      alt="Second Account" 
+                      className="w-6 h-6 rounded-full border border-gray-300"
+                    />
+                    <span className="text-gray-500">Jane Smith</span>
+                  </div>
+                </div>
+                <button
+                  className="flex items-center w-full px-4 py-2 text-sm text-primary-600 hover:bg-primary-50 rounded-md mx-2 my-1"
+                >
+                  <UserPlus className="w-4 h-4 mr-3" />
+                  Add Another Account
+                </button>
                 <div className="border-t border-gray-200 my-2"></div>
                 <button
                   onClick={handleLogout}
