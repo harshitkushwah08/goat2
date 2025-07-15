@@ -1,0 +1,201 @@
+
+
+@import "tailwindcss";
+
+
+
+#main-box-op {
+    transition: all 0.3s ease-in-out;
+    overflow: auto;
+    position: relative;
+    box-shadow: rgb(17 17 26 / 5%) 0 1px 0, 
+                rgb(17 17 26 / 5%) 0 8px 24px, 
+                rgb(17 17 26 / 5%) 0 16px 48px;
+}
+
+
+  
+  ::selection {
+    background: #00C950;
+    color: #fff;
+    color: #dfe0e2;
+  }
+
+
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+
+@theme {
+  --color-primary: #10b981;
+  --color-primary-dark: #059669;
+  --color-primary-light: #34d399;
+  --color-primary-50: #ecfdf5;
+  --color-primary-100: #d1fae5;
+  --color-primary-200: #a7f3d0;
+  --color-primary-400: #34d399;
+  --color-primary-500: #10b981;
+  --color-primary-600: #059669;
+  --color-primary-700: #047857;
+
+  /* Neutral Colors */
+  --color-boldWhite: #fff;
+  --color-boldBlack: #000;
+  --color-bodyGray-50: #f9fafb;
+  --color-bodyGray-100: #f3f4f6;
+  --color-bodyGray-200: #e5e7eb;
+  --color-bodyGray-300: #d1d5db;
+  --color-bodyGray-400: #9ca3af;
+  --color-bodyGray-500: #6b7280;
+  --color-bodyGray-600: #4b5563;
+  --color-bodyGray-900: #111827;
+
+  /* Status Colors */
+  --color-success: #10b981;
+  --color-success-light: #d1fae5;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  --color-error: #ef4444;
+  --color-error-light: #fee2e2;
+  --color-info: #3b82f6;
+  --color-info-light: #dbeafe;
+
+  /* Background Colors */
+  --bg-primary: var(--color-white);
+  --bg-secondary: var(--color-gray-50);
+  --bg-tertiary: var(--color-gray-100);
+  --bg-overlay: rgb(0 0 0 / 50%);
+
+  /* Text Colors */
+  --text-primary: var(--color-gray-900);
+  --text-secondary: var(--color-gray-600);
+  --text-tertiary: var(--color-gray-500);
+  --text-inverse: var(--color-white);
+
+  /* Border Colors */
+  --border-primary-b: var(--color-gray-200);
+  --border-secondary-b: var(--color-gray-300);
+  --border-accent-b: var(--color-primary-200);
+  --border-focus-b: var(--color-primary-500);
+
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 5%);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 10%);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 10%);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 10%);
+
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+
+  
+}
+
+
+/* Mobile Breakpoints */
+@media (width <= 640px) {
+  :root {
+    --spacing-xs: 0.125rem;
+    --spacing-sm: 0.25rem;
+    --spacing-md: 0.5rem;
+    --spacing-lg: 1rem;
+    --spacing-xl: 1.5rem;
+    --spacing-2xl: 2rem;
+    --spacing-3xl: 2.5rem;
+  }
+}
+
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color:#fffafa;
+}
+
+/* Gradient green scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(0, 0%, 94%);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    #86efac,   
+    #86efac,   
+    #22c55e   
+  );
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    to bottom,
+    #4ade80,   /* lighter green on hover */
+    #4ade80,
+    #16a34a
+  );
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+}
+
+
+.progress-gradient svg path:first-of-type {
+  stroke: url(#greenGradient);
+}
+
+.progress-gradient svg {
+  width: 100%;
+  height: 100%;
+}
+
+.progress-gradient svg defs {
+  display: block;
+}
+
+
+@keyframes bounceSlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10%);
+  }
+}
+.animate-bounce-slow {
+  animation: bounceSlow 1.8s ease-in-out infinite;
+}
+
+@keyframes spinSlow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spinSlow 2.5s linear infinite;
+}
+
