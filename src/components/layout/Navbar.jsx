@@ -6,8 +6,8 @@ import {
    CheckCircle, AlertTriangle,
    History,
    Pen,
-   BookTemplateIcon,
-   LayoutGrid
+  BookOpen,
+  LayoutGrid
 } from "lucide-react";
 import { useDebounce } from "../../hooks/useDebounce";
 import { imgPath } from "../../assets/imagesData";
