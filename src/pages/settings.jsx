@@ -22,7 +22,16 @@ import {
    Key,
    ShieldAlert,
    AlertTriangle,Trash2,Eye,EyeOff,
-   DownloadIcon
+   DownloadIcon,
+   Building,
+   Store,
+   Factory,
+   ShoppingBag,
+   Truck,
+   FileText,
+   BarChart,
+   Scan,
+   Package
 } from 'lucide-react';
 import { imgPath } from "../assets/imagesData";
 
@@ -86,18 +95,51 @@ export const SettingsPage = () => {
     dataRetention: '12',
   });
 
+  const [businessSettings, setBusinessSettings] = useState({
+    businessType: 'retail',
+    autoSettlePayments: true,
+    enableAdvancePayment: true,
+    enableRoundOff: true,
+    enableConsignor: false,
+    autoGenerateEWayBill: false
+  });
+
+  const [inventorySettings, setInventorySettings] = useState({
+    stockValueType: 'exclusive',
+    priceSettingType: 'lastTransaction',
+    stockValueCalculation: 'purchase',
+    trackInventoryBy: 'invoice',
+    enableWholesalePrice: false,
+    enableBarcodeScan: false,
+    enableSecondaryUnits: false,
+    enableItemDescription: true,
+    enableMRP: true,
+    enableCESS: false,
+    showCategory: true,
+    useOldInventoryModule: false
+  });
+
   const tabs = [
     { id: 'profile', label: 'Profile', icon: <User size={18} /> },
     { id: 'notifications', label: 'Notifications', icon: <Bell size={18} /> },
     { id: 'security', label: 'Security', icon: <Shield size={18} /> },
     { id: 'appearance', label: 'Appearance', icon: <Palette size={18} /> },
     { id: 'data', label: 'Data & Privacy', icon: <Database size={18} /> },
-    // { id: 'billing', label: 'Billing', icon: <CreditCard size={18} /> },
+    { id: 'business', label: 'Business Info', icon: <Building size={18} /> },
+    { id: 'inventory', label: 'Inventory', icon: <Package size={18} /> },
     { id: 'team', label: 'Team', icon: <Users size={18} /> },
   ];
 
   const handleSettingChange = (key, value) => {
     setSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleBusinessSettingChange = (key, value) => {
+    setBusinessSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleInventorySettingChange = (key, value) => {
+    setInventorySettings(prev => ({ ...prev, [key]: value }));
   };
 
   const [currentToken, setCurrentToken] = useState('abcd1234efgh5678'); // example
@@ -758,6 +800,361 @@ export const SettingsPage = () => {
     </div>
   );
 
+  const renderBusinessSettings = () => (
+    <div className="space-y-6">
+      <Card className="border-none shadow-none">
+        <CardContent className="p-4">
+          <h3 className="text-lg font-semibold mb-4">Business Type</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { id: 'retail', label: 'Retail', icon: <Store className="h-6 w-6" /> },
+              { id: 'wholesale', label: 'Wholesaler & Distributor', icon: <Truck className="h-6 w-6" /> },
+              { id: 'manufacturing', label: 'Manufacturing', icon: <Factory className="h-6 w-6" /> },
+              { id: 'trading', label: 'Trading', icon: <ShoppingBag className="h-6 w-6" /> }
+            ].map(type => (
+              <div 
+                key={type.id}
+                onClick={() => handleBusinessSettingChange('businessType', type.id)}
+                className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                  businessSettings.businessType === type.id 
+                    ? 'border-primary-500 bg-primary-50' 
+                    : 'border-bodyGray-300 hover:border-primary-200'
+                }`}
+              >
+                <div className="flex flex-col items-center gap-2 text-center">
+                  <div className={`p-3 rounded-full ${
+                    businessSettings.businessType === type.id 
+                      ? 'bg-primary-100 text-primary-600' 
+                      : 'bg-bodyGray-100 text-bodyGray-600'
+                  }`}>
+                    {type.icon}
+                  </div>
+                  <span className="font-medium">{type.label}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card className="border-none shadow-none">
+        <CardContent className="p-4">
+          <h3 className="text-lg font-semibold mb-4">Payment Settings</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="autoSettlePayments" className="font-semibold">Auto Settle Payments</Label>
+                <p className="text-sm text-bodyGray-400">If there are advance payments, auto-settle them with the newly created invoice</p>
+              </div>
+              <Toggle
+                id="autoSettlePayments"
+                checked={businessSettings.autoSettlePayments}
+                onChange={(e) => handleBusinessSettingChange('autoSettlePayments', e.target.checked)}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="enableAdvancePayment" className="font-semibold">Enable Advance Payment</Label>
+                <p className="text-sm text-bodyGray-400">Set this up to enable the advance payment option</p>
+              </div>
+              <Toggle
+                id="enableAdvancePayment"
+                checked={businessSettings.enableAdvancePayment}
+                onChange={(e) => handleBusinessSettingChange('enableAdvancePayment', e.target.checked)}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="enableRoundOff" className="font-semibold">Enable Round Off</Label>
+                <p className="text-sm text-bodyGray-400">Set this up to enable the Round Off option</p>
+              </div>
+              <Toggle
+                id="enableRoundOff"
+                checked={businessSettings.enableRoundOff}
+                onChange={(e) => handleBusinessSettingChange('enableRoundOff', e.target.checked)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card className="border-none shadow-none">
+        <CardContent className="p-4">
+          <h3 className="text-lg font-semibold mb-4">E-Way Bill Settings</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="enableConsignor" className="font-semibold">Enable Consignor [Dispatch address for E-Way-Bills]</Label>
+                <p className="text-sm text-bodyGray-400">Consignor is the company sending a shipment to be delivered</p>
+              </div>
+              <Toggle
+                id="enableConsignor"
+                checked={businessSettings.enableConsignor}
+                onChange={(e) => handleBusinessSettingChange('enableConsignor', e.target.checked)}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="autoGenerateEWayBill" className="font-semibold">AutoGenerate E-Way-Bill</Label>
+                <p className="text-sm text-bodyGray-400">E-way bill will be generated and details will get printed on E-invoice</p>
+              </div>
+              <Toggle
+                id="autoGenerateEWayBill"
+                checked={businessSettings.autoGenerateEWayBill}
+                onChange={(e) => handleBusinessSettingChange('autoGenerateEWayBill', e.target.checked)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderInventorySettings = () => (
+    <div className="space-y-6">
+      <Card className="border-none shadow-none">
+        <CardContent className="p-4">
+          <h3 className="text-lg font-semibold mb-4">Stock Value Settings</h3>
+          <div className="space-y-4">
+            <div>
+              <Label className="font-semibold mb-2 block">Stock Value</Label>
+              <p className="text-sm text-bodyGray-400 mb-3">The stock value that you see for each product, Do you want to see it inclusive of taxes or exclusive of taxes?</p>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="stockValueType" 
+                    value="inclusive" 
+                    checked={inventorySettings.stockValueType === 'inclusive'} 
+                    onChange={() => handleInventorySettingChange('stockValueType', 'inclusive')}
+                    className="text-primary-600 focus:ring-primary-500"
+                  />
+                  <span>Inclusive of Taxes</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="stockValueType" 
+                    value="exclusive" 
+                    checked={inventorySettings.stockValueType === 'exclusive'} 
+                    onChange={() => handleInventorySettingChange('stockValueType', 'exclusive')}
+                    className="text-primary-600 focus:ring-primary-500"
+                  />
+                  <span>Exclusive of Taxes</span>
+                </label>
+              </div>
+            </div>
+            
+            <div>
+              <Label className="font-semibold mb-2 block">Sale / Purchase Price Setting</Label>
+              <p className="text-sm text-bodyGray-400 mb-3">Set the configuration that works for your business use-case.</p>
+              <div className="space-y-3">
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="priceSettingType" 
+                    value="lastTransaction" 
+                    checked={inventorySettings.priceSettingType === 'lastTransaction'} 
+                    onChange={() => handleInventorySettingChange('priceSettingType', 'lastTransaction')}
+                    className="text-primary-600 focus:ring-primary-500 mt-1"
+                  />
+                  <div>
+                    <span className="font-medium">Last Transaction Price</span>
+                    <p className="text-sm text-bodyGray-400">It will show you the price as per the last transaction with that particular party.</p>
+                  </div>
+                </label>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="priceSettingType" 
+                    value="fixedPrice" 
+                    checked={inventorySettings.priceSettingType === 'fixedPrice'} 
+                    onChange={() => handleInventorySettingChange('priceSettingType', 'fixedPrice')}
+                    className="text-primary-600 focus:ring-primary-500 mt-1"
+                  />
+                  <div>
+                    <span className="font-medium">Fixed Price</span>
+                    <p className="text-sm text-bodyGray-400">This is suited if you want to have a fixed price for majority of your customers and if prices of your products don't change for months.</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+            
+            <div>
+              <Label className="font-semibold mb-2 block">Calculation of Stock Value</Label>
+              <p className="text-sm text-bodyGray-400 mb-3">Do you want the Calculation of Stock value based on Purchase price or Sale Price?</p>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="stockValueCalculation" 
+                    value="purchase" 
+                    checked={inventorySettings.stockValueCalculation === 'purchase'} 
+                    onChange={() => handleInventorySettingChange('stockValueCalculation', 'purchase')}
+                    className="text-primary-600 focus:ring-primary-500"
+                  />
+                  <span>Purchase Price</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="stockValueCalculation" 
+                    value="sale" 
+                    checked={inventorySettings.stockValueCalculation === 'sale'} 
+                    onChange={() => handleInventorySettingChange('stockValueCalculation', 'sale')}
+                    className="text-primary-600 focus:ring-primary-500"
+                  />
+                  <span>Sale Price</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card className="border-none shadow-none">
+        <CardContent className="p-4">
+          <h3 className="text-lg font-semibold mb-4">Sales Inventory Setting</h3>
+          <div className="space-y-4">
+            <div>
+              <Label className="font-semibold mb-2 block">How do you want to track the Inventory?</Label>
+              <div className="space-y-3">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="trackInventoryBy" 
+                    value="invoice" 
+                    checked={inventorySettings.trackInventoryBy === 'invoice'} 
+                    onChange={() => handleInventorySettingChange('trackInventoryBy', 'invoice')}
+                    className="text-primary-600 focus:ring-primary-500"
+                  />
+                  <span>Reduce stock from Inventory when I'm making a Invoice</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="trackInventoryBy" 
+                    value="challan" 
+                    checked={inventorySettings.trackInventoryBy === 'challan'} 
+                    onChange={() => handleInventorySettingChange('trackInventoryBy', 'challan')}
+                    className="text-primary-600 focus:ring-primary-500"
+                  />
+                  <span>Reduce stock from Inventory when I'm making a delivery challan</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card className="border-none shadow-none">
+        <CardContent className="p-4">
+          <h3 className="text-lg font-semibold mb-4">Additional Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="enableWholesalePrice" className="font-semibold">Wholesale Price</Label>
+                <p className="text-sm text-bodyGray-400">Enable this if you want to provide a wholesale price for bulk quantities</p>
+              </div>
+              <Toggle
+                id="enableWholesalePrice"
+                checked={inventorySettings.enableWholesalePrice}
+                onChange={(e) => handleInventorySettingChange('enableWholesalePrice', e.target.checked)}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="enableBarcodeScan" className="font-semibold">Scan Barcode</Label>
+                <p className="text-sm text-bodyGray-400">If you want to do the billing via barcode scanning, Enable this option</p>
+              </div>
+              <Toggle
+                id="enableBarcodeScan"
+                checked={inventorySettings.enableBarcodeScan}
+                onChange={(e) => handleInventorySettingChange('enableBarcodeScan', e.target.checked)}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="enableSecondaryUnits" className="font-semibold">Secondary Units</Label>
+                <p className="text-sm text-bodyGray-400">Do you deal with multiple units for the same product in your business?</p>
+              </div>
+              <Toggle
+                id="enableSecondaryUnits"
+                checked={inventorySettings.enableSecondaryUnits}
+                onChange={(e) => handleInventorySettingChange('enableSecondaryUnits', e.target.checked)}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="enableItemDescription" className="font-semibold">Item Description</Label>
+                <p className="text-sm text-bodyGray-400">Do you want to show a small description in the document PDF?</p>
+              </div>
+              <Toggle
+                id="enableItemDescription"
+                checked={inventorySettings.enableItemDescription}
+                onChange={(e) => handleInventorySettingChange('enableItemDescription', e.target.checked)}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="enableMRP" className="font-semibold">MRP</Label>
+                <p className="text-sm text-bodyGray-400">Enable this if you wish to show MRP and Selling price separately</p>
+              </div>
+              <Toggle
+                id="enableMRP"
+                checked={inventorySettings.enableMRP}
+                onChange={(e) => handleInventorySettingChange('enableMRP', e.target.checked)}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="enableCESS" className="font-semibold">CESS</Label>
+                <p className="text-sm text-bodyGray-400">Do you charge CESS from your customers?</p>
+              </div>
+              <Toggle
+                id="enableCESS"
+                checked={inventorySettings.enableCESS}
+                onChange={(e) => handleInventorySettingChange('enableCESS', e.target.checked)}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="showCategory" className="font-semibold">Show Category</Label>
+                <p className="text-sm text-bodyGray-400">By using this feature you can categorize products</p>
+              </div>
+              <Toggle
+                id="showCategory"
+                checked={inventorySettings.showCategory}
+                onChange={(e) => handleInventorySettingChange('showCategory', e.target.checked)}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="useOldInventoryModule" className="font-semibold">Select old Inventory Module</Label>
+                <p className="text-sm text-bodyGray-400">Use the legacy inventory management system</p>
+              </div>
+              <Toggle
+                id="useOldInventoryModule"
+                checked={inventorySettings.useOldInventoryModule}
+                onChange={(e) => handleInventorySettingChange('useOldInventoryModule', e.target.checked)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
   // const renderBillingSettings = () => (
   //   <div className="space-y-6">
   //     <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
@@ -848,8 +1245,10 @@ export const SettingsPage = () => {
         return renderAppearanceSettings();
       case 'data':
         return renderDataSettings();
-      // case 'billing':
-      //   return renderBillingSettings();
+      case 'business':
+        return renderBusinessSettings();
+      case 'inventory':
+        return renderInventorySettings();
       case 'team':
         return renderTeamSettings();
       default:
@@ -903,6 +1302,8 @@ export const SettingsPage = () => {
         {activeTab === 'security' && 'Manage your account security settings'}
         {activeTab === 'appearance' && 'Customize the look and feel of your dashboard'}
         {activeTab === 'data' && 'Control your data and privacy settings'}
+        {activeTab === 'business' && 'Configure your business settings and preferences'}
+        {activeTab === 'inventory' && 'Manage your inventory and stock settings'}
         {activeTab === 'team' && 'Manage team members and permissions'}
       </CardDescription>
     </CardHeader>

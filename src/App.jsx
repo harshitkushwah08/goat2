@@ -52,6 +52,8 @@ const SettingsPage = React.lazy(() => import('./pages/settings'));
 const InventoryDashboard = React.lazy(() => import('./pages/inventory/dashboard'));
 const InventoryItems = React.lazy(() => import('./pages/inventory/items'));
 
+const ContactPage = React.lazy(() => import('./pages/contact').then(module => ({ default: module.ContactPage })));
+
 const LoginPage = React.lazy(() => import('./pages/LoginPage')); 
 const SignupPage = React.lazy(() => import('./pages/SignupPage'));
 const TwoFactorPage = React.lazy(() => import('./components/security/twoFactor'));
@@ -117,6 +119,7 @@ function App() {
             <Route path="/inventory/items" element={<LayoutWrapper><InventoryItems /></LayoutWrapper>} />
             <Route path="/inventory/categories" element={<LayoutWrapper><CategoriesInventory /></LayoutWrapper>} />
             <Route path="/inventory/stock" element={<LayoutWrapper><StockManagement /></LayoutWrapper>} />
+            <Route path="/contact" element={<LayoutWrapper><ContactPage /></LayoutWrapper>} />
           </Routes>
         </Suspense>
               <Toaster position="top-center" />
