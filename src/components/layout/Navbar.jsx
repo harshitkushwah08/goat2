@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useDebounce } from "../../hooks/useDebounce";
 import { imgPath } from "../../assets/imagesData";
+import { Badge } from "../ui/badge";
 // import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 export const Navbar = () => {
