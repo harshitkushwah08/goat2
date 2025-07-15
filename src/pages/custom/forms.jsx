@@ -28,6 +28,7 @@ import { Badge } from '../../components/ui/badge';
 export const CustomFormsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedForm, setSelectedForm] = useState(null);
   const [showAddCategoryDialog, setShowAddCategoryDialog] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
