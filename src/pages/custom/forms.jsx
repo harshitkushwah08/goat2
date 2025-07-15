@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  FileText, 
+  FileText,
   Plus, 
   Search, 
   Filter, 
@@ -15,7 +15,8 @@ import {
   CreditCard,
   FileSpreadsheet,
   LayoutGrid,
-  ArrowRight
+  ArrowRight,
+  PlusCircle
 } from 'lucide-react';
 
 import { PageHeader } from '../../components/ui/PageHeader';
@@ -27,20 +28,22 @@ import { Badge } from '../../components/ui/badge';
 export const CustomFormsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedForm, setSelectedForm] = useState(null);
-  const [showFormDetails, setShowFormDetails] = useState(false);
-  const [currentForm, setCurrentForm] = useState(null);
+  const [showAddCategoryDialog, setShowAddCategoryDialog] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
   const navigate = useNavigate();
 
-  const categories = [
+  const [categories, setCategories] = useState([
     { id: 'all', name: 'All Categories', count: 12 },
-    { id: 'invoice', name: 'Invoice', count: 3, icon: <FileText className="w-4 h-4" /> },
+    { id: 'invoice', name: 'Invoice', count: 3, icon: <FileText className="w-4 h-4" />, fixed: true },
+    { id: 'quotation', name: 'Quotation', count: 2, icon: <FileText className="w-4 h-4" />, fixed: true },
     { id: 'customer', name: 'Customer', count: 2, icon: <Users className="w-4 h-4" /> },
     { id: 'order', name: 'Order', count: 2, icon: <ShoppingCart className="w-4 h-4" /> },
     { id: 'payment', name: 'Payment', count: 1, icon: <CreditCard className="w-4 h-4" /> },
     { id: 'survey', name: 'Survey', count: 2, icon: <FileSpreadsheet className="w-4 h-4" /> },
     { id: 'other', name: 'Other', count: 2, icon: <Tag className="w-4 h-4" /> },
-  ];
+  ]);
 
   const [forms, setForms] = useState([
     { 
@@ -169,15 +172,14 @@ export const CustomFormsPage = () => {
     }
   };
 
-  const handleUseForm = (form) => {
-    setCurrentForm(form);
-    setShowFormDetails(true);
+  const handleViewForm = (form) => {
+    // Navigate to dedicated form page
+    navigate(`/forms/view/${form.id}`, { state: { form } });
   };
 
   const handleEditForm = (e, form) => {
     e.stopPropagation();
-    console.log("Edit form", form.id);
-    // Navigate to form editor or open edit modal
+    navigate(`/forms/edit/${form.id}`, { state: { form } });
   };
 
   const handleDeleteForm = (e, form) => {
@@ -209,6 +211,39 @@ export const CustomFormsPage = () => {
     // Process form submission
   };
 
+  const handleAddCategory = () => {
+    if (newCategoryName.trim()) {
+      const newCategory = {
+        id: newCategoryName.toLowerCase().replace(/\s+/g, '-'),
+        name: newCategoryName,
+        count: 0,
+        icon: <Tag className="w-4 h-4" />
+      };
+      setCategories([...categories, newCategory]);
+      setNewCategoryName('');
+      setShowAddCategoryDialog(false);
+    }
+  };
+
+  const handleDeleteCategory = (e, category) => {
+    e.stopPropagation();
+    if (category.fixed) {
+      alert("This category cannot be deleted.");
+      return;
+    }
+    setCategoryToDelete(category);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDeleteCategory = () => {
+    setCategories(categories.filter(c => c.id !== categoryToDelete.id));
+    setShowDeleteDialog(false);
+    setCategoryToDelete(null);
+    if (selectedCategory === categoryToDelete.id) {
+      setSelectedCategory('all');
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 p-6 min-h-screen">
       <PageHeader
@@ -234,30 +269,49 @@ export const CustomFormsPage = () => {
             <CardContent>
               <div className="space-y-2">
                 {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
-                    className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${
-                      selectedCategory === category.id
-                        ? 'bg-primary-50 text-primary-700 border border-primary-200'
-                        : 'hover:bg-bodyGray-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      {category.icon && (
-                        <div className={`p-1.5 rounded-md ${
-                          selectedCategory === category.id 
-                            ? 'bg-primary-100' 
-                            : 'bg-bodyGray-100'
-                        }`}>
-                          {category.icon}
-                        </div>
-                      )}
-                      <span className="font-medium">{category.name}</span>
-                    </div>
-                    <Badge variant="secondary">{category.count}</Badge>
-                  </button>
+                  <div key={category.id} className="flex items-center justify-between">
+                    <button
+                      onClick={() => setSelectedCategory(category.id)}
+                      className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${
+                        selectedCategory === category.id
+                          ? 'bg-primary-50 text-primary-700 border border-primary-200'
+                          : 'hover:bg-bodyGray-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {category.icon && (
+                          <div className={`p-1.5 rounded-md ${
+                            selectedCategory === category.id 
+                              ? 'bg-primary-100' 
+                              : 'bg-bodyGray-100'
+                          }`}>
+                            {category.icon}
+                          </div>
+                        )}
+                        <span className="font-medium">{category.name}</span>
+                        {category.fixed && (
+                          <span className="text-xs bg-yellow-100 text-yellow-800 px-1.5 py-0.5 rounded">Fixed</span>
+                        )}
+                      </div>
+                      <Badge variant="secondary">{category.count}</Badge>
+                    </button>
+                    {!category.fixed && category.id !== 'all' && (
+                      <button 
+                        onClick={(e) => handleDeleteCategory(e, category)}
+                        className="ml-2 p-1 text-bodyGray-400 hover:text-red-500 rounded-md hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 ))}
+                <button
+                  onClick={() => setShowAddCategoryDialog(true)}
+                  className="w-full flex items-center justify-center gap-2 p-2 mt-4 border border-dashed border-bodyGray-300 rounded-lg text-bodyGray-500 hover:text-primary-600 hover:border-primary-400 transition-colors"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  Add Category
+                </button>
               </div>
             </CardContent>
           </Card>
@@ -317,7 +371,7 @@ export const CustomFormsPage = () => {
                 className={`hover:shadow-md transition-shadow cursor-pointer ${
                   selectedForm === form.id ? 'ring-2 ring-primary-200 border-primary-500' : ''
                 }`}
-                onClick={() => handleUseForm(form)}
+                onClick={() => handleViewForm(form)}
               >
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
@@ -338,184 +392,24 @@ export const CustomFormsPage = () => {
                   <p className="text-sm text-bodyGray-600 mb-4 line-clamp-2">{form.description}</p>
                   
                   <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
                       <Badge variant={getStatusColor(form.status)}>
                         {form.status}
                       </Badge>
                       <span className="text-xs text-bodyGray-500">{form.fields} fields</span>
                     </div>
-                    <div className="flex gap-1">
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={(e) => handleEditForm(e, form)}
-                      >
-                        <Edit className="w-4 h-4 text-bodyGray-500 hover:text-primary-600" />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={(e) => handleDeleteForm(e, form)}
-                      >
-                        <Trash2 className="w-4 h-4 text-bodyGray-500 hover:text-red-600" />
-                      </Button>
-                    </div>
+                    <Button
+                      size="sm"
+                      className="text-primary-600 hover:bg-primary-50"
+                    >
+                      Use Form
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
             ))}
             
             {/* Form Details Modal */}
-            {showFormDetails && currentForm && (
-              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                  <div className="p-6 border-b border-gray-200">
-                    <div className="flex justify-between items-center">
-                      <h2 className="text-xl font-semibold text-gray-900">{currentForm.name}</h2>
-                      <button 
-                        onClick={() => setShowFormDetails(false)}
-                        className="text-gray-500 hover:text-gray-700"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div>
-                    <p className="text-gray-500 mt-1">{currentForm.description}</p>
-                  </div>
-                  
-                  <div className="p-6">
-                    <form onSubmit={(e) => {
-                      e.preventDefault();
-                      handleSubmitForm(new FormData(e.target));
-                    }}>
-                      <div className="space-y-6">
-                        {currentForm.formFields.map((field) => (
-                          <div key={field.id} className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">
-                              {field.label} {field.required && <span className="text-red-500">*</span>}
-                            </label>
-                            
-                            {field.type === 'text' && (
-                              <input
-                                type="text"
-                                name={field.id}
-                                required={field.required}
-                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                              />
-                            )}
-                            
-                            {field.type === 'email' && (
-                              <input
-                                type="email"
-                                name={field.id}
-                                required={field.required}
-                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                              />
-                            )}
-                            
-                            {field.type === 'tel' && (
-                              <input
-                                type="tel"
-                                name={field.id}
-                                required={field.required}
-                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                              />
-                            )}
-                            
-                            {field.type === 'number' && (
-                              <input
-                                type="number"
-                                name={field.id}
-                                required={field.required}
-                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                              />
-                            )}
-                            
-                            {field.type === 'date' && (
-                              <input
-                                type="date"
-                                name={field.id}
-                                required={field.required}
-                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                              />
-                            )}
-                            
-                            {field.type === 'textarea' && (
-                              <textarea
-                                name={field.id}
-                                required={field.required}
-                                rows={4}
-                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                              />
-                            )}
-                            
-                            {field.type === 'checkbox' && (
-                              <div className="flex items-center">
-                                <input
-                                  type="checkbox"
-                                  name={field.id}
-                                  required={field.required}
-                                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                                />
-                                <span className="ml-2 text-sm text-gray-500">Yes</span>
-                              </div>
-                            )}
-                            
-                            {field.type === 'select' && (
-                              <select
-                                name={field.id}
-                                required={field.required}
-                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                              >
-                                <option value="">Select an option</option>
-                                <option value="option1">Option 1</option>
-                                <option value="option2">Option 2</option>
-                                <option value="option3">Option 3</option>
-                              </select>
-                            )}
-                            
-                            {field.type === 'rating' && (
-                              <div className="flex gap-2">
-                                {[1, 2, 3, 4, 5].map((rating) => (
-                                  <label key={rating} className="flex flex-col items-center">
-                                    <input
-                                      type="radio"
-                                      name={field.id}
-                                      value={rating}
-                                      required={field.required}
-                                      className="sr-only"
-                                    />
-                                    <span className="text-2xl cursor-pointer hover:text-yellow-500 peer-checked:text-yellow-500">
-                                      ★
-                                    </span>
-                                    <span className="text-xs">{rating}</span>
-                                  </label>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      
-                      <div className="mt-8 flex justify-end gap-3">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => setShowFormDetails(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          type="submit"
-                          className="bg-primary-600 hover:bg-primary-700 text-white"
-                        >
-                          Submit Form
-                        </Button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Add New Form Card */}
             <Card className="border-2 border-dashed border-bodyGray-300 hover:border-primary-400 transition-colors cursor-pointer">
@@ -553,6 +447,75 @@ export const CustomFormsPage = () => {
           )}
         </div>
       </div>
+      
+      {/* Add Category Dialog */}
+      {showAddCategoryDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">Add New Category</h2>
+            </div>
+            <div className="p-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category Name
+              </label>
+              <input
+                type="text"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                placeholder="Enter category name"
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+              <div className="mt-6 flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAddCategoryDialog(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleAddCategory}
+                  className="bg-primary-600 hover:bg-primary-700"
+                  disabled={!newCategoryName.trim()}
+                >
+                  Add Category
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Delete Category Confirmation Dialog */}
+      {showDeleteDialog && categoryToDelete && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">Delete Category</h2>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-700">
+                Are you sure you want to delete the category "{categoryToDelete.name}"? 
+                This will not delete the forms in this category.
+              </p>
+              <div className="mt-6 flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowDeleteDialog(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={confirmDeleteCategory}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  Delete Category
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

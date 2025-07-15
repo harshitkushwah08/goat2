@@ -11,6 +11,7 @@ const DashboardPage = React.lazy(() => import('./pages/sales/dashboard'));
 const TemplatePage = React.lazy(() => import('./pages/custom/templates'));
 const CustomFormsPage = React.lazy(() => import('./pages/custom/forms'));
 const FormPage = React.lazy(() => import('./pages/sales/form').then(module => ({ default: module.FormPage })));
+const FormView = React.lazy(() => import('./pages/custom/FormView'));
 const PaymentsReceipts = React.lazy(() => import('./pages/sales/PaymentsReceipts').then(module => ({ default: module.PaymentsReceipts })));
 const ProformaInvoice = React.lazy(() => import('./pages/sales/ProformaInvoice').then(module => ({ default: module.ProformaInvoice })));
 const DeliveryChallans = React.lazy(() => import('./pages/sales/DeliveryChallans').then(module => ({ default: module.DeliveryChallans })));
@@ -78,6 +79,8 @@ function App() {
             <Route path="/form-gen" element={<LayoutWrapper><DashboardPage /></LayoutWrapper>} />
             <Route path="/forms/templates" element={<LayoutWrapper><TemplatePage /></LayoutWrapper>} />
             <Route path="/forms/custom" element={<LayoutWrapper><CustomFormsPage /></LayoutWrapper>} />
+            <Route path="/forms/view/:id" element={<LayoutWrapper><FormView /></LayoutWrapper>} />
+            <Route path="/forms/edit/:id" element={<LayoutWrapper><FormView /></LayoutWrapper>} />
             <Route path="/form" element={<LayoutWrapper><FormPage /></LayoutWrapper>} />
             <Route path="/trash" element={<LayoutWrapper><TrashPage /></LayoutWrapper>} />
             <Route path="/ai" element={<LayoutWrapper><Ai /></LayoutWrapper>} />
