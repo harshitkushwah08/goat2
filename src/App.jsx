@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PageLoader } from './components/ui/loader';
 import { Toaster } from "react-hot-toast";
 
+// Onboarding Flow
+const OnboardingFlow = React.lazy(() => import('./pages/OnboardingFlow'));
+
 // Lazy load components for better performance
 const Notifications = React.lazy(() => import('./pages/Notifications'));
 const RecentlyDownloaded = React.lazy(() => import('./pages/RecentlyDownloaded'));
@@ -70,6 +73,8 @@ function App() {
             <Route path="/" element={<IndexPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+
+            <Route path="/onboarding" element={<OnboardingFlow />} />
 
             <Route path="/notifications" element={<LayoutWrapper><Notifications /></LayoutWrapper>} />
             <Route path="/recently-downloaded" element={<LayoutWrapper><RecentlyDownloaded /></LayoutWrapper>} />
