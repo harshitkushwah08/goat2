@@ -134,6 +134,11 @@ export const Navbar = () => {
           <Pen className='w-4 h-4' /> Custom Forms
         </div>
         </a>
+        <a href='/forms/custom'>
+        <div className="relative p-3 text-gray-600 flex flex-row items-center justify-center gap-4 text-sm border-bodyGray-200 border-2 hover:text-gray-900 hover:bg-gray-100 rounded-md cursor-pointer active:bg-primary-600 active:text-boldWhite active:scale-98 transition-colors group">
+          <LayoutGrid className='w-4 h-4' /> Form Builder
+        </div>
+        </a>
         <a href='/forms/templates'>
 
          <div className="relative p-3 text-gray-600 flex flex-row items-center justify-center gap-4 text-sm border-bodyGray-200 border-2 hover:text-gray-900 hover:bg-gray-100 rounded-md cursor-pointer active:bg-primary-600 active:text-boldWhite active:scale-98 transition-colors group">

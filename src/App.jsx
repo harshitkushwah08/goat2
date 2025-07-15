@@ -7,8 +7,9 @@ import { Toaster } from "react-hot-toast";
 const Notifications = React.lazy(() => import('./pages/Notifications'));
 const RecentlyDownloaded = React.lazy(() => import('./pages/RecentlyDownloaded'));
 // Lazy load components for better performance
-const DashboardPage = React.lazy(() => import('./pages/sales/dashboard'));
-const TemplatePage = React.lazy(() => import('./pages/custom/templates').then(module => ({ default: module.TemplatePage })));
+const DashboardPage = React.lazy(() => import('./pages/sales/dashboard')); 
+const TemplatePage = React.lazy(() => import('./pages/custom/templates'));
+const CustomFormsPage = React.lazy(() => import('./pages/custom/forms'));
 const FormPage = React.lazy(() => import('./pages/sales/form').then(module => ({ default: module.FormPage })));
 const PaymentsReceipts = React.lazy(() => import('./pages/sales/PaymentsReceipts').then(module => ({ default: module.PaymentsReceipts })));
 const ProformaInvoice = React.lazy(() => import('./pages/sales/ProformaInvoice').then(module => ({ default: module.ProformaInvoice })));
@@ -76,6 +77,7 @@ function App() {
             <Route path="/info" element={<LayoutWrapper><InfoPage /></LayoutWrapper>} />
             <Route path="/form-gen" element={<LayoutWrapper><DashboardPage /></LayoutWrapper>} />
             <Route path="/forms/templates" element={<LayoutWrapper><TemplatePage /></LayoutWrapper>} />
+            <Route path="/forms/custom" element={<LayoutWrapper><CustomFormsPage /></LayoutWrapper>} />
             <Route path="/form" element={<LayoutWrapper><FormPage /></LayoutWrapper>} />
             <Route path="/trash" element={<LayoutWrapper><TrashPage /></LayoutWrapper>} />
             <Route path="/ai" element={<LayoutWrapper><Ai /></LayoutWrapper>} />
