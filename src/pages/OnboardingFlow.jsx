@@ -12,6 +12,8 @@ import {
   Factory,
   ShoppingBag,
   Truck
+  X,
+  HelpCircle
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { PageLoader } from "../components/ui/loader";
@@ -20,6 +22,7 @@ export default function OnboardingFlow() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(true);
   const navigate = useNavigate();
   
   const [businessInfo, setBusinessInfo] = useState({
@@ -71,6 +74,21 @@ export default function OnboardingFlow() {
       return () => clearInterval(interval);
     }
   }, [loading, navigate]);
+
+  // Prevent navigation away from onboarding
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   const sectors = [
     { id: "retail", name: "Retail", icon: <Store className="w-6 h-6" /> },
@@ -158,10 +176,82 @@ export default function OnboardingFlow() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-bodyGray-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-bodyGray-50 flex flex-col relative">
       <header className="p-6">
         <img src="/logo/horizontal-logo.png" alt="InventoryPro" className="h-10 w-30" />
       </header>
+
+      {/* Welcome Popup */}
+      {showWelcomePopup && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 relative">
+            <button 
+              onClick={() => setShowWelcomePopup(false)}
+              className="absolute top-4 right-4 text-bodyGray-500 hover:text-bodyGray-900"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mx-auto mb-6">
+              <HelpCircle className="h-8 w-8 text-primary-600" />
+            </div>
+            
+            <h2 className="text-2xl font-bold text-center mb-4">Welcome to InventoryPro!</h2>
+            
+            <p className="text-bodyGray-600 mb-6">
+              Let's set up your business profile to customize your experience. This will only take a few minutes.
+            </p>
+            
+            <div className="space-y-4">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center mr-3">
+                  <span className="font-bold text-primary-600">1</span>
+                </div>
+                <div>
+                  <h3 className="font-medium text-bodyGray-900">Select your business type</h3>
+                  <p className="text-sm text-bodyGray-500">Tell us about your business sector and type</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start">
+                <div className="flex-shrink-0 w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center mr-3">
+                  <span className="font-bold text-primary-600">2</span>
+                </div>
+                <div>
+                  <h3 className="font-medium text-bodyGray-900">Choose your currency</h3>
+                  <p className="text-sm text-bodyGray-500">Select the primary currency for your business</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start">
+                <div className="flex-shrink-0 w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center mr-3">
+                  <span className="font-bold text-primary-600">3</span>
+                </div>
+                <div>
+                  <h3 className="font-medium text-bodyGray-900">Add company details</h3>
+                  <p className="text-sm text-bodyGray-500">Provide information about your company size and tax status</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-8 flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowWelcomePopup(false)}
+                className="flex-1"
+              >
+                Skip Guide
+              </Button>
+              <Button
+                onClick={() => setShowWelcomePopup(false)}
+                className="flex-1 bg-primary-600 hover:bg-primary-700"
+              >
+                Get Started
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-2xl">

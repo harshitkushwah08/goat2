@@ -81,7 +81,7 @@ export default function SignupPage() {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      navigate("/onboarding");
+      navigate("/onboarding", { replace: true }); // Use replace to prevent going back
     }, 2000);
   };
 
